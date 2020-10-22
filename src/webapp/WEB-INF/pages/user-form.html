@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Add User Form</title>
+</head>
+<body>
+<div class="container">
+    <h3>Users Directory</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save User</p>
+
+    <form action="#"
+          th:action="@{/users/saveuser}"
+          th:object="${user}"
+          method="post">
+
+        <input type="hidden" th:field="*{id}">
+        <input type="text" th:field="*{login}" class="form-control mb-4 col-4" placeholder="Login">
+        <br>
+        <input type="text" th:field="*{firstName}" class="form-control mb-4 col-4" placeholder="firstName">
+        <br>
+        <input type="text" th:field="*{lastName}" class="form-control mb-4 col-4" placeholder="lastName">
+        <br>
+
+        <button type="submit" class="btn btn-info col-2">Save</button>
+    </form>
+    <hr>
+
+    <a th:href="@{/users/list}">
+        <button class="btn btn-primary btn-sm mb-3">Back to Users List</button>
+    </a>
+</div>
+</body>
+</html>
