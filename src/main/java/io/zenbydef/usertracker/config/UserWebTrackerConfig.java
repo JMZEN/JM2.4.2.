@@ -80,7 +80,7 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
     @Bean
     public JpaTransactionManager jpaTransactionManager() {
         JpaTransactionManager tx = new JpaTransactionManager();
-        tx.setEntityManagerFactory(entityManagerFactory.getObject()); // уточнить
+        tx.setEntityManagerFactory(entityManagerFactory.getObject());
         return tx;
     }
 
@@ -117,11 +117,11 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login")
-                .setViewName("login-page");
-
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-    }
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addViewController("/login")
+//                .setViewName("login-page");
+//
+//        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//    }
 }

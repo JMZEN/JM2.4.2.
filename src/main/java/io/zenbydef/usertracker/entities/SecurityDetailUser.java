@@ -1,57 +1,119 @@
-//package io.zenbydef.usertracker.entities;
-//
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
-//
-//import java.util.Collection;
-//import java.util.HashSet;
-//import java.util.Set;
-//
-//public class SecurityDetailUser extends User implements UserDetails {
-//
-//    private final User user;
-//
-//    public SecurityDetailUser(User user) {
-//        this.user = user;
-//    }
-//
-////    @Override
-////    public Collection<? extends GrantedAuthority> getAuthorities() {
-////        Set<Privilege> set = new HashSet<>();
-////        for (Role role : user.getRoles()) {
-////            Collection<Privilege> rolePrivileges = role.getPrivileges();
-////            set.addAll(rolePrivileges);
-////        }
-////        return set;
-////    }
-//
-//    @Override
-//    public String getUsername() {
-//        return user.getUsername();
-//    }
-//
-//    @Override
-//    public String getPassword() {
-//        return user.getPassword();
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
-//}
+package io.zenbydef.usertracker.entities;
+
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Set;
+
+public class SecurityDetailUser extends User implements UserDetails, CredentialsContainer {
+
+    private User user;
+    private String userName;
+    private String password;
+    private Set<GrantedAuthority> authorities;
+    private Boolean accountNonExpired = true;
+    private Boolean accountNonLocked = true;
+    private Boolean credentialsNonExpired = true;
+    private Boolean enabled = true;
+
+    public SecurityDetailUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public Set<GrantedAuthority> getAuthorities() {
+        return user.getAuthorities();
+    }
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+
+    public Boolean getAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public Boolean getCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        super.setUsername(username);
+    }
+
+    @Override
+    public void setPassword(String password) {
+        super.setPassword(password);
+    }
+
+    @Override
+    public Collection<Role> getRoles() {
+        return super.getRoles();
+    }
+
+    @Override
+    public void setRoles(Collection<Role> roles) {
+        super.setRoles(roles);
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    @Override
+    public void eraseCredentials() {
+        user.setPassword(null);
+    }
+}

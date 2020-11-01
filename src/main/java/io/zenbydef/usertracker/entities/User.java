@@ -1,13 +1,13 @@
 package io.zenbydef.usertracker.entities;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Table
@@ -31,15 +31,12 @@ public class User {
     private Collection<Role> roles;
 
     @Transient
-    private Set<Privilege> authorities;
-
-    public Set<Privilege> getAuthorities() {
-        Set<Privilege> set = new HashSet<>();
-        for (Role role : this.roles) {
-            Collection<Privilege> rolePrivileges = role.getPrivileges();
-            set.addAll(rolePrivileges);
-        }
-        return set;
+    public Set<GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::getPrivileges)
+                .flatMap(Collection::stream)
+                .map(privilege -> new SimpleGrantedAuthority(privilege.getAuthority()))
+                .collect(Collectors.toSet());
     }
 
     public User() {

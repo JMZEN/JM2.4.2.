@@ -1,15 +1,17 @@
 package io.zenbydef.usertracker.entities;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "privileges")
-public class Privilege {
+public class Privilege implements GrantedAuthority {
 
     @Id
     @Column(name = "privilege_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -47,5 +49,10 @@ public class Privilege {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String getAuthority() {
+        return getNameOfPrivilege();
     }
 }
