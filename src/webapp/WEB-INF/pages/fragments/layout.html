@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <body>
 <div th:fragment="navbar">
     <div class="navbar-inner">
-        <a class="brand" href="/"> Home </a>
-        <ul class="nav">
-            <li><a th:href="@{/admin/adduser}"> New User </a></li>
-        </ul>
-        <ul class="nav pull-right">
-            <li><a th:href="@{/logout}" class="menu-right"> Logout </a></li>
-        </ul>
+        <div th:if="${#request.isUserInRole('ADMIN')}">
+            <a class="brand pull-right" th:href="@{/admin/adduser}"> New
+                User</a>
+        </div>
+        <a class="brand pull-right" th:href="@{/logout}"> Logout </a>
     </div>
 </div>
 </body>
 </html>
+
+<!--sec:authorize="hasRole('ROLE_ADMIN')-->
