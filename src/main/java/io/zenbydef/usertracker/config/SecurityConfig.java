@@ -33,68 +33,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
 
-
     @Bean
     public AuthSuccessHandler authSuccessHandler() {
         return new AuthSuccessHandler();
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().successHandler(authSuccessHandler());
+    protected void configure(HttpSecurity http) throws Exception { // @formatter:off
+        http
+                .formLogin()
+                .loginPage("/login").permitAll()
+                .loginProcessingUrl("/doLogin")
+                .successHandler(authSuccessHandler());
 
         http
                 .authorizeRequests()
                 .antMatchers("/signup", "/user/register").permitAll()
                 .anyRequest().authenticated();
 
-
-
-
-
-//                .formLogin()
-//                .loginPage("/login").permitAll()
-//                .loginProcessingUrl("/doLogin")
-
-//                .formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/doLogin")
-//                .successHandler(authSuccessHandler())
-//                .permitAll()
-
-
-
-                http.logout().permitAll().logoutUrl("/logout")
-
+        http
+                .logout().permitAll().logoutUrl("/logout")
                 .and()
                 .exceptionHandling().accessDeniedPage("/denied");
 
         http
                 .csrf().disable();
-//                .authorizeRequests()
-//                .anyRequest().authenticated()
-//                .and()
-//
-//                .formLogin()
-//                .loginPage("/login").permitAll()
-//                .loginProcessingUrl("/doLogin")
-//
-//                .and()
-
-
-//                .antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("/user/**").hasRole("USER")
-//
-//
-//                .and()
-//                .logout().permitAll().logoutUrl("/logout")
-
-//                .and()
-
-//                .exceptionHandling().accessDeniedPage("/access-denied")
-
-//                .and()
-
-        ;
     }
 }
+

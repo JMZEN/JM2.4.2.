@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = userDao.findUserByName(username);
         if (user == null) {
-            throw new RuntimeException("No user found with this username");
+            throw new UsernameNotFoundException("No user found with this username: " + username);
         }
         return new SecurityDetailUser(user);
     }

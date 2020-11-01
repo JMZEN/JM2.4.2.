@@ -10,9 +10,6 @@ import java.util.Set;
 public class SecurityDetailUser extends User implements UserDetails, CredentialsContainer {
 
     private User user;
-    private String userName;
-    private String password;
-    private Set<GrantedAuthority> authorities;
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;
@@ -39,27 +36,6 @@ public class SecurityDetailUser extends User implements UserDetails, Credentials
 
     public User getUser() {
         return user;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-
-    public Boolean getAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    public Boolean getAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    public Boolean getCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
     }
 
     @Override

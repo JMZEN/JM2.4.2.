@@ -57,16 +57,4 @@ public class AdminController {
         userService.deleteUser(userId);
         return new ModelAndView("redirect:/admin/list");
     }
-
-
-//    @GetMapping("/searchuser")
-//    public ModelAndView searchUser(@RequestParam("theSearchName") String theSearchName) {
-//        List<User> userList;
-//        if (theSearchName == null) {
-//            userList = new ArrayList<>();
-//        } else {
-//            userList = userService.searchUsers(theSearchName);
-//        }
-//        return new ModelAndView("user-search-table", "users", userList);
-//    }
 }
