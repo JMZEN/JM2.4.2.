@@ -6,12 +6,12 @@ public class SpringMVCDispatcherServletInitializer
         extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return null;
+        return new Class[]{SecurityConfig.class, UserWebTrackerConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{UserWebTrackerConfig.class};
+        return null;
     }
 
     @Override

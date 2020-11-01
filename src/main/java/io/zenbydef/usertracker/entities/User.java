@@ -3,75 +3,77 @@ package io.zenbydef.usertracker.entities;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Table
 @Component
-@Entity(name = "users_db")
+@Entity(name = "users")
 public class User {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "login", length = 45)
-    private String login;
+    private String username;
+    private String password;
 
-    @Column(name = "first_name", length = 45)
-    private String firstName;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    private Collection<Role> roles;
 
-    @Column(name = "last_name", length = 45)
-    private String lastName;
+    @Transient
+    private Set<Privilege> authorities;
+
+    public Set<Privilege> getAuthorities() {
+        Set<Privilege> set = new HashSet<>();
+        for (Role role : this.roles) {
+            Collection<Privilege> rolePrivileges = role.getPrivileges();
+            set.addAll(rolePrivileges);
+        }
+        return set;
+    }
 
     public User() {
     }
 
-    public User(String login, String firstName, String lastName) {
-        this.login = login;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getLastName() {
-        return lastName;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 }

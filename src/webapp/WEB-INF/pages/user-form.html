@@ -19,24 +19,22 @@
     <p class="h4 mb-4">Save User</p>
 
     <form action="#"
-          th:action="@{/users/saveuser}"
+          th:action="@{/admin/saveuser}"
           th:object="${user}"
           method="post">
 
         <input type="hidden" th:field="*{id}">
-        <input type="text" th:field="*{login}" class="form-control mb-4 col-4" placeholder="Login">
+        <input type="text" th:field="*{username}" class="form-control mb-4 col-4" placeholder="Login">
         <br>
-        <input type="text" th:field="*{firstName}" class="form-control mb-4 col-4" placeholder="firstName">
-        <br>
-        <input type="text" th:field="*{lastName}" class="form-control mb-4 col-4" placeholder="lastName">
+        <input type="text" th:field="*{password}" class="form-control mb-4 col-4" placeholder="Password">
         <br>
 
         <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
     <hr>
 
-    <a th:href="@{/users/list}">
-        <button class="btn btn-primary btn-sm mb-3">Back to Users List</button>
+    <a th:href="@{/admin/list}">
+        <button class="btn btn-primary">Back to Users List</button>
     </a>
 </div>
 </body>

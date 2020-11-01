@@ -1,65 +1,28 @@
 package io.zenbydef.usertracker.controllers;
 
+import io.zenbydef.usertracker.annotations.UserReadPermission;
 import io.zenbydef.usertracker.entities.User;
 import io.zenbydef.usertracker.service.UserService;
+import io.zenbydef.usertracker.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
-@Transactional
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/list")
-    public ModelAndView listUsers() {
-        List<User> userList = userService.getUsers();
-        return new ModelAndView("users-table", "usersForTable", userList);
-    }
-
-    @GetMapping("/adduser")
-    public ModelAndView addUser() {
-        return new ModelAndView("user-form", "user", new User());
-    }
-
-    @PostMapping("/saveuser")
-    public ModelAndView saveUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
-        return new ModelAndView("redirect:/users/list");
-    }
-
-    @PostMapping("/updateuser")
-    public ModelAndView showFormForUpdate(@RequestParam("userId") int userId) {
-        return new ModelAndView("user-form", "user", userService.getUserById(userId));
-    }
-
-    @PostMapping("/deleteuser")
-    public ModelAndView deleteUser(@RequestParam("userId") int userId) {
-        userService.deleteUser(userId);
-        return new ModelAndView("redirect:/users/list");
-    }
-
-    @GetMapping("/searchuser")
-    public ModelAndView searchUser(@RequestParam("theSearchName") String theSearchName) {
-        List<User> userList;
-        if (theSearchName == null) {
-            userList = new ArrayList<>();
-        } else {
-            userList = userService.searchUsers(theSearchName);
-        }
-        return new ModelAndView("user-search-table", "users", userList);
+    @UserReadPermission
+    @GetMapping("/{id}")
+    public ModelAndView indexPage(@PathVariable("id") Long id) {
+        return new ModelAndView("user-page", "user", userService.getUserById(id));
     }
 }
