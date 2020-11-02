@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 
 
 <head>
@@ -17,9 +19,7 @@
 <body>
 
 <div class="container">
-    <!--    <h3>User Directory</h3>-->
     <div th:replace="fragments/layout :: navbar"></div>
-
     <hr>
 
     <!--    <form action="#"-->
