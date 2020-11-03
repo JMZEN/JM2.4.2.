@@ -1,51 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/xhtml"
       lang="en">
 <body>
 <div th:fragment="navbar">
-    <div class="navbar-inner">
-        <p sec:authorize="isAuthenticated()" class=" brand pull-right"
-           th:text="'Welcome: ' + ${#authentication?.principal?.username}">User</p>
-        <a sec:authorize="${hasAuthority('user.create')}" class=" brand pull-right" th:href="@{/admin/adduser}"> New
-            User</a>
-        <a class="brand pull-right" th:href="@{/logout}"> Logout </a>
+    <div class="navbar justify-content-center">
+        <ul class="nav nav-tabs">
+            <li sec:authorize="isAuthenticated()" class="nav-item">
+                <a class="nav-link"
+                   th:text="'Welcome: ' + ${#authentication?.principal?.username}">User</a>
+            </li>
+
+            <li class="nav-item">
+                <a sec:authorize="${hasAuthority('user.create')}" class="nav-link" th:href="@{/admin/adduser}">
+                    New User</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}"> Logout </a>
+            </li>
+        </ul>
     </div>
 </div>
 </body>
 </html>
-
-<!--<div th:if="${#authorization.expression('hasAuthority(''user.view.profile'')')}">-->
-<!--<div sec:authentication="hasAnyAuthority('user.update')">-->
-<!--<div sec:authorize="hasAnyAuthority('user.update')">-->
-<!--<div>-->
-<!--    User: <span sec:authentication="name">NOT FOUND</span>-->
-<!--    Spring Roles: <span sec:authentication="principal.authorities">NOT FOUND</span>-->
-<!--    <p sec:authentication='principal.authorities'></p>-->
-<!--</div>-->
-
-<!--Role(s):-->
-<!--<th:block th:each="r, iter:${#authentication.getAuthorities()}">-->
-<!--    <span th:text="${r}"></span>-->
-<!--    <th:block th:if="${!iter.last}">,</th:block>-->
-<!--</th:block>-->
-
-<!--<div sec:authentication="principal.username"></div> &lt;!&ndash; works fine &ndash;&gt;-->
-<!--2.-->
-<!--<div sec:authentication="principal.authorities"></div> &lt;!&ndash; works fine &ndash;&gt;-->
-
-<!--3.-->
-<!--<div sec:authorize="isAuthenticated()">true</div> &lt;!&ndash; works fine &ndash;&gt;-->
-<!--3.-->
-<!--<div sec:authorize="hasRole('ADMIN')">true</div> &lt;!&ndash; works fine &ndash;&gt;-->
-<!--&lt;!&ndash;        4.<span th:text="${#authorization.expression('isAuthenticated()')}"></span> &lt;!&ndash; works fine &ndash;&gt;&ndash;&gt;-->
-
-<!--5.-->
-<!--<div th:text="${#vars.role_admin}"></div> &lt;!&ndash;Works fine &ndash;&gt;-->
-<!--6.-->
-<!--<div sec:authorize="${hasRole('ADMIN')}"> IS ADMIN</div> &lt;!&ndash; Doesnt work &ndash;&gt;-->
-<!--7.-->
-<!--<div sec:authorize="${hasRole(#vars.role_admin)}"> IS ADMIN</div> &lt;!&ndash; Doesnt work &ndash;&gt;-->
-<!--        8.<div th:text="${#authorization.expression('hasRole(''ADMIN'')')} "></div> &lt;!&ndash; Doesnt work &ndash;&gt;-->
-<!--        9.<div th:text="${#authorization.expression('hasRole(#vars.role_admin)')}"></div> &lt;!&ndash; Doesnt work &ndash;&gt;-->
-

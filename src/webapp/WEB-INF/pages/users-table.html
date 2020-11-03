@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 
 
@@ -20,7 +19,6 @@
 
 <div class="container">
     <div th:replace="fragments/layout :: navbar"></div>
-    <hr>
 
     <!--    <form action="#"-->
     <!--          th:action="@{/users/searchuser}"-->
@@ -34,8 +32,6 @@
     <!--            <input type="submit" value="Search" class="btn btn-primary"/>-->
     <!--        </div>-->
     <!--    </form>-->
-
-    <br>
 
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -82,7 +78,6 @@
                     </form>
                 </div>
             </td>
-
         </tr>
         </tbody>
     </table>
