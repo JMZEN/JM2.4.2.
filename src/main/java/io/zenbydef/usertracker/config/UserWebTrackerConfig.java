@@ -11,7 +11,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -64,17 +66,26 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
                 new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setPackagesToScan(env.getProperty("jpa.packagesToScan"));
-        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
         entityManagerFactoryBean.setJpaProperties(getProperties());
 
         return entityManagerFactoryBean;
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        hibernateJpaVendorAdapter.setShowSql(true);
+//        hibernateJpaVendorAdapter.setGenerateDdl(true); //Auto creating scheme when true
+        hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);//Database type
+        return hibernateJpaVendorAdapter;
     }
 
     private Properties getProperties() {
         Properties properties = new Properties();
         properties.setProperty("jpa.dialect", env.getProperty("jpa.dialect"));
         properties.setProperty("jpa.show_sql", env.getProperty("jpa.show_sql"));
-        properties.setProperty("jpa.hbm2ddl.auto", env.getProperty("jpa.hbm2ddl.auto"));
+//        properties.setProperty("jpa.hbm2ddl.auto", env.getProperty("jpa.hbm2ddl.auto"));
         return properties;
     }
 

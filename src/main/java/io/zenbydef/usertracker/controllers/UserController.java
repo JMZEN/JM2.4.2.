@@ -1,8 +1,8 @@
 package io.zenbydef.usertracker.controllers;
 
 import io.zenbydef.usertracker.annotations.UserViewProfilePermission;
-import io.zenbydef.usertracker.entities.User;
-import io.zenbydef.usertracker.service.UserService;
+import io.zenbydef.usertracker.entities.SecurityDetailUser;
+import io.zenbydef.usertracker.service.SecurityDetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +16,12 @@ import java.security.Principal;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private SecurityDetailUserService securityDetailUserService;
 
     @UserViewProfilePermission
     @GetMapping("/user")
     public ModelAndView indexPage(Principal principal) {
-        User user = userService.findUserByName(principal.getName());
+        SecurityDetailUser user = securityDetailUserService.findUserByName(principal.getName());
         return new ModelAndView("user-page", "user", user);
     }
 }

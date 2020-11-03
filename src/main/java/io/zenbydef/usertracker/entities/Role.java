@@ -1,5 +1,8 @@
 package io.zenbydef.usertracker.entities;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
@@ -11,17 +14,20 @@ public class Role {
 
     @Id
     @Column(name = "role_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
     private String nameOfRole;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<SecurityDetailUser> users;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH},
-            fetch = FetchType.EAGER)
+//    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH},
+//            fetch = FetchType.EAGER)
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "privilege_id"))
@@ -38,7 +44,7 @@ public class Role {
         return nameOfRole;
     }
 
-    public Set<User> getUsers() {
+    public Set<SecurityDetailUser> getUsers() {
         return users;
     }
 

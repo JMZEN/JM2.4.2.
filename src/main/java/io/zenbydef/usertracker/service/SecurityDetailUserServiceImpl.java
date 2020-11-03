@@ -1,8 +1,7 @@
 package io.zenbydef.usertracker.service;
 
-import io.zenbydef.usertracker.dao.userdao.UserDao;
+import io.zenbydef.usertracker.dao.userdao.SecurityDetailUserDao;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
-import io.zenbydef.usertracker.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,25 +11,25 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
+public class SecurityDetailUserServiceImpl implements SecurityDetailUserService {
+    private final SecurityDetailUserDao userDao;
 
-    public UserServiceImpl(UserDao userDao) {
+    public SecurityDetailUserServiceImpl(SecurityDetailUserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<SecurityDetailUser> getUsers() {
         return userDao.getUsers();
     }
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(SecurityDetailUser user) {
         userDao.saveUser(user);
     }
 
     @Override
-    public User getUserById(Long id) {
+    public SecurityDetailUser getUserById(Long id) {
         return userDao.getUserById(id);
     }
 
@@ -40,16 +39,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByName(String userName) {
+    public SecurityDetailUser findUserByName(String userName) {
         return userDao.findUserByName(userName);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userDao.findUserByName(username);
+        final SecurityDetailUser user = userDao.findUserByName(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user found with this username: " + username);
         }
-        return new SecurityDetailUser(user);
+        return user;
     }
 }

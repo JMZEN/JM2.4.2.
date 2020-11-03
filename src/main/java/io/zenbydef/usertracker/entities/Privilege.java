@@ -17,7 +17,7 @@ public class Privilege implements GrantedAuthority {
     @Column(name = "name")
     private String nameOfPrivilege;
 
-    @ManyToMany(mappedBy = "privileges")
+    @ManyToMany(mappedBy = "privileges", fetch = FetchType.EAGER)
     private Collection<Role> roles;
 
     public Privilege() {

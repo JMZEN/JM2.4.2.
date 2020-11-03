@@ -1,95 +1,126 @@
 package io.zenbydef.usertracker.entities;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class SecurityDetailUser extends User implements UserDetails, CredentialsContainer {
+@Entity
+@Table(name = "security_user_details")
+@Component
+public class SecurityDetailUser implements UserDetails, CredentialsContainer {
 
-    private User user;
-    private Boolean accountNonExpired = true;
-    private Boolean accountNonLocked = true;
-    private Boolean credentialsNonExpired = true;
-    private Boolean enabled = true;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "security_user_id")
+    private Long id;
 
-    public SecurityDetailUser(User user) {
-        this.user = user;
-    }
+    private String username;
+    private String password;
 
-    @Override
-    public Set<GrantedAuthority> getAuthorities() {
-        return user.getAuthorities();
-    }
-
-    @Override
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
-    @Override
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    @Override
     public void setUsername(String username) {
-        super.setUsername(username);
+        this.username = username;
     }
 
-    @Override
     public void setPassword(String password) {
-        super.setPassword(password);
+        this.password = password;
     }
 
-    @Override
     public Collection<Role> getRoles() {
-        return super.getRoles();
+        return roles;
     }
 
-    @Override
     public void setRoles(Collection<Role> roles) {
-        super.setRoles(roles);
+        this.roles = roles;
     }
 
-    @Override
-    public String getUsername() {
-        return user.getUsername();
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+//    private Boolean accountNonExpired = true;
+//    private Boolean accountNonLocked = true;
+//    private Boolean credentialsNonExpired = true;
+//    private Boolean enabled = true;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "security_user_id", referencedColumnName = "security_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    private Collection<Role> roles;
+
+    @Autowired
+    @OneToOne(fetch = FetchType.EAGER)
+    private Customer customer;
+
+
+    public SecurityDetailUser() {
+    }
+
+    @Transient
+    public Set<GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::getPrivileges)
+                .flatMap(Collection::stream)
+                .map(privilege -> new SimpleGrantedAuthority(privilege.getAuthority()))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return this.password;
     }
 
     @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    public SecurityDetailUser(Customer customer) {
+        this.customer = customer;
+    }
+    @Override
     public boolean isAccountNonExpired() {
-        return this.accountNonExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.accountNonLocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.credentialsNonExpired;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return true;
     }
 
     @Override
     public void eraseCredentials() {
-        user.setPassword(null);
+        this.password = null;
     }
 }
