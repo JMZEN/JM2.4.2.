@@ -119,11 +119,4 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addViewController("/login")
-//                .setViewName("login-page");
-//
-//        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-//    }
 }
