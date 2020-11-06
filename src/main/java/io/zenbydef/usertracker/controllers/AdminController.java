@@ -10,8 +10,6 @@ import io.zenbydef.usertracker.entities.SecurityDetailUser;
 import io.zenbydef.usertracker.service.SecurityDetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,16 +25,11 @@ public class AdminController {
     private final SecurityDetailUserService securityDetailUserService;
     private final RoleDao roleDao;
 
-    private List<String> rolesList;
+    private Set<String> rolesSet;
 
     @Autowired
     private void setRolesSet() {
-        List<String> list = new ArrayList<>();
-        for (Role role : roleDao.getRoles()) {
-            String nameOfRole = role.getNameOfRole();
-            list.add(nameOfRole);
-        }
-        this.rolesList = list;
+        this.rolesSet = roleDao.getRoles().stream().map(Role::getNameOfRole).collect(Collectors.toSet());
     }
 
     public AdminController(SecurityDetailUserService securityDetailUserService, RoleDao roleDao) {
@@ -52,70 +45,56 @@ public class AdminController {
     }
 
     @UserCreatePermission
-    @GetMapping("/adduser")
+    @GetMapping("/add")
     public ModelAndView addUser() {
         SecurityDetailUser detailUser = new SecurityDetailUser();
-
         ModelAndView modelAndView = new ModelAndView("user-form");
         modelAndView.addObject("user", detailUser);
-        modelAndView.addObject("allRoles", rolesList);
+        modelAndView.addObject("allRoles", rolesSet);
         return modelAndView;
     }
 
     @UserCreatePermission
-    @PostMapping("/saveuser")
+    @PostMapping("/save")
     public ModelAndView saveUser(@ModelAttribute("user") SecurityDetailUser user, @RequestParam("roles") String[] roles) {
-        securityDetailUserService.saveUser(saveUserAsUser(user.getPassword(), user.getUsername(), String.join(" ", roles)));
+        user.setRoles(convertRoles(String.join(" ", roles)));
+        securityDetailUserService.saveUser(user);
         return new ModelAndView("redirect:/admin/list");
     }
 
     @UserUpdatePermission
-    @PostMapping("/updateuser")
+    @PostMapping("/update")
     public ModelAndView showFormForUpdate(@RequestParam("userId") Long userId) {
-        return new ModelAndView("user-form", "user", securityDetailUserService.getUserById(userId));
+        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        ModelAndView modelAndView = new ModelAndView("user-form");
+        modelAndView.addObject("user", detailUser);
+        modelAndView.addObject("allRoles", rolesSet);
+        return modelAndView;
     }
 
     @UserDeletePermission
-    @PostMapping("/deleteuser")
+    @PostMapping("/delete")
     public ModelAndView deleteUser(@RequestParam("userId") Long userId) {
         securityDetailUserService.deleteUser(userId);
         return new ModelAndView("redirect:/admin/list");
     }
 
-    private SecurityDetailUser saveUserAsUser(String password,
-                                              String username,
-                                              String roles) {
-        Set<Role> set = new HashSet<>();
-
+    private Collection<Role> convertRoles(String roles) {
+        Set<Role> convertedRoleSet = new HashSet<>();
+        Role roleToFind = new Role();
         for (String s : roles.split(" ")) {
-            Role role = new Role(s);
-            Role roleToFind = new Role();
-            for (String role1 : rolesList) {
-                if (role1.equals(s)) {
-                    System.out.println("role find");
-                }
-            }
-
-            for (Role role1 : roleDao.getRoles()) {
-                if (role.getNameOfRole().equalsIgnoreCase(role1.getNameOfRole())) {
-                    System.out.println("role find");
-                    roleToFind = role1;
-                }
-
-            }
-
-            System.out.println(role.toString());
-            System.out.println(roleToFind.toString());
-//            if (role.getNameOfRole().equalsIgnoreCase(roleToFind.getNameOfRole())) {
-            set.add(roleToFind);
-//            } else {
-//                set.add(role);
-//            }
+            roleToFind = getRole(s, roleToFind);
+            convertedRoleSet.add(roleToFind);
         }
-        SecurityDetailUser user = new SecurityDetailUser();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setRoles(set);
-        return user;
+        return convertedRoleSet;
+    }
+
+    private Role getRole(String s, Role roleToFind) {
+        for (Role role1 : roleDao.getRoles()) {
+            if (s.equalsIgnoreCase(role1.getNameOfRole())) {
+                roleToFind = role1;
+            }
+        }
+        return roleToFind;
     }
 }
