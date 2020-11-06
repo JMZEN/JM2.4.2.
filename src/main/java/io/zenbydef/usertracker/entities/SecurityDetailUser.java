@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,25 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
     private String username;
     private String password;
 
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "security_user_id", referencedColumnName = "security_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    private Collection<Role> roles;
+
+    public SecurityDetailUser() {
+    }
+
+    @Transient
+    public Set<GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::getPrivileges)
+                .flatMap(Collection::stream)
+                .map(privilege -> new SimpleGrantedAuthority(privilege.getAuthority()))
+                .collect(Collectors.toSet());
+    }
+
     public Long getId() {
         return id;
     }
@@ -34,8 +54,18 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
         this.id = id;
     }
 
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -50,55 +80,6 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
         this.roles = roles;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-//    private Boolean accountNonExpired = true;
-//    private Boolean accountNonLocked = true;
-//    private Boolean credentialsNonExpired = true;
-//    private Boolean enabled = true;
-
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-            fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "security_user_id", referencedColumnName = "security_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
-    private Collection<Role> roles;
-
-    @Autowired
-    @OneToOne(fetch = FetchType.EAGER)
-    private Customer customer;
-
-
-    public SecurityDetailUser() {
-    }
-
-    @Transient
-    public Set<GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(Role::getPrivileges)
-                .flatMap(Collection::stream)
-                .map(privilege -> new SimpleGrantedAuthority(privilege.getAuthority()))
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    public SecurityDetailUser(Customer customer) {
-        this.customer = customer;
-    }
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -122,5 +103,28 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
         this.password = null;
+    }
+
+    public String getStringRoles() {
+        StringBuilder sb = new StringBuilder();
+        for (Role role : roles) {
+            String s = role.getNameOfRole() + " ";
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    @Override
+    public String toString() {
+        return "SecurityDetailUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }

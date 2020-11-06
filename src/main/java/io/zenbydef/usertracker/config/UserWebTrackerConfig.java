@@ -1,5 +1,6 @@
 package io.zenbydef.usertracker.config;
 
+import io.zenbydef.usertracker.StringToRoleConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -50,6 +52,9 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
     @Autowired
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
+    @Autowired
+    private StringToRoleConverter stringToRoleConverter;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -76,7 +81,7 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
     public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setShowSql(true);
-//        hibernateJpaVendorAdapter.setGenerateDdl(true); //Auto creating scheme when true
+        hibernateJpaVendorAdapter.setGenerateDdl(true); //Auto creating scheme when true
         hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);//Database type
         return hibernateJpaVendorAdapter;
     }
@@ -130,4 +135,8 @@ public class UserWebTrackerConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
+//    @Override
+//    public void addFormatters(FormatterRegistry registry) {
+//        registry.addConverter(stringToRoleConverter);
+//    }
 }

@@ -28,6 +28,15 @@
         <br>
         <input type="text" th:field="*{password}" class="form-control mb-4 col-4" placeholder="Password">
         <br>
+        <tr>
+            <td>Roles</td>
+            <td>
+                <th:block th:each="role : ${allRoles}">
+                    <input type="checkbox" name="roles" th:value="${role}"/>
+                    <label th:text="${role}"></label>
+                </th:block>
+            </td>
+        </tr>
 
         <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
