@@ -13,8 +13,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <!--    <link rel="shortcut icon" type="image/x-icon" th:href="@{/resources/favicon.png}">-->
-
 </head>
 <body>
 <div class="container">
@@ -42,9 +40,12 @@
                 <input id="password" type="password" name="password" placeholder="Enter password"/>
             </div>
         </div>
+
         <div class="form-actions col-xs-offset-2 col-xs-10">
             <input type="submit" class="btn btn-primary" value="Sign In"/>
         </div>
+        <br>
+        <input type="reset" class="btn btn-primary" value="Clear"/>
     </form>
 
     <div th:insert="~{fragments/footer :: copy}"></div>

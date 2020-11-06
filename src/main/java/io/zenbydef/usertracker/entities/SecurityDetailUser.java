@@ -1,7 +1,5 @@
 package io.zenbydef.usertracker.entities;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,7 +20,6 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "security_user_id")
     private Long id;
-
     private String username;
     private String password;
 
@@ -103,19 +99,6 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
         this.password = null;
-    }
-
-    public String getStringRoles() {
-        StringBuilder sb = new StringBuilder();
-        for (Role role : roles) {
-            String s = role.getNameOfRole() + " ";
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
     }
 
     @Override

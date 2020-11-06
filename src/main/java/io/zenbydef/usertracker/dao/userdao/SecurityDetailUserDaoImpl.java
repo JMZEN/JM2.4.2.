@@ -1,7 +1,6 @@
 package io.zenbydef.usertracker.dao.userdao;
 
 import io.zenbydef.usertracker.dao.RoleDao;
-import io.zenbydef.usertracker.entities.Role;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,20 +9,13 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Repository
 public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    private RoleDao roleDao;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -38,7 +30,6 @@ public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
 
     @Override
     public void saveUser(SecurityDetailUser user) {
-        user.setPassword(passwordEncoder.encode((user.getPassword())));
         entityManager.merge(user);
     }
 

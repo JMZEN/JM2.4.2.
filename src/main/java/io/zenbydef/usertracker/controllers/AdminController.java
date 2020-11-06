@@ -9,6 +9,7 @@ import io.zenbydef.usertracker.entities.Role;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
 import io.zenbydef.usertracker.service.SecurityDetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,11 +26,15 @@ public class AdminController {
     private final SecurityDetailUserService securityDetailUserService;
     private final RoleDao roleDao;
 
-    private Set<String> rolesSet;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    private Set<String> stringRolesSet;
 
     @Autowired
     private void setRolesSet() {
-        this.rolesSet = roleDao.getRoles().stream().map(Role::getNameOfRole).collect(Collectors.toSet());
+        this.stringRolesSet = roleDao.getRoles().stream().map(Role::getNameOfRole).collect(Collectors.toSet());
     }
 
     public AdminController(SecurityDetailUserService securityDetailUserService, RoleDao roleDao) {
@@ -50,7 +55,7 @@ public class AdminController {
         SecurityDetailUser detailUser = new SecurityDetailUser();
         ModelAndView modelAndView = new ModelAndView("user-form");
         modelAndView.addObject("user", detailUser);
-        modelAndView.addObject("allRoles", rolesSet);
+        modelAndView.addObject("allRoles", stringRolesSet);
         return modelAndView;
     }
 
@@ -58,6 +63,7 @@ public class AdminController {
     @PostMapping("/save")
     public ModelAndView saveUser(@ModelAttribute("user") SecurityDetailUser user, @RequestParam("roles") String[] roles) {
         user.setRoles(convertRoles(String.join(" ", roles)));
+        user.setPassword(passwordEncoder.encode((user.getPassword())));
         securityDetailUserService.saveUser(user);
         return new ModelAndView("redirect:/admin/list");
     }
@@ -66,10 +72,40 @@ public class AdminController {
     @PostMapping("/update")
     public ModelAndView showFormForUpdate(@RequestParam("userId") Long userId) {
         SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
-        ModelAndView modelAndView = new ModelAndView("user-form");
-        modelAndView.addObject("user", detailUser);
-        modelAndView.addObject("allRoles", rolesSet);
+        ModelAndView modelAndView = new ModelAndView("user-update");
+        modelAndView.addObject("userId", userId);
+        modelAndView.addObject("username", detailUser.getUsername());
+        modelAndView.addObject("allRoles", stringRolesSet);
         return modelAndView;
+    }
+
+    @UserCreatePermission
+    @PostMapping("/saveupduser")
+    public ModelAndView saveUpdatedUser(@RequestParam("userId") Long userId,
+                                        @RequestParam("username") String username,
+                                        @RequestParam("roles") String[] roles) {
+        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        detailUser.setUsername(username);
+        detailUser.setRoles(convertRoles(String.join(" ", roles)));
+        securityDetailUserService.saveUser(detailUser);
+        return new ModelAndView("redirect:/admin/list");
+    }
+
+    @UserUpdatePermission
+    @GetMapping("/updatepass")
+    public ModelAndView updatePassword(@RequestParam("userId") Long userId) {
+        ModelAndView modelAndView = new ModelAndView("user-change-pass");
+        modelAndView.addObject("userId", userId);
+        return modelAndView;
+    }
+
+    @UserUpdatePermission
+    @PostMapping("/savepass")
+    public ModelAndView savePassword(@RequestParam("userId") Long userId, @RequestParam("pass") String password) {
+        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        detailUser.setPassword(passwordEncoder.encode((password)));
+        securityDetailUserService.saveUser(detailUser);
+        return new ModelAndView("redirect:/admin/list");
     }
 
     @UserDeletePermission

@@ -38,8 +38,8 @@
         <tr>
             <th>Id</th>
             <th>Login</th>
-            <th>Email</th>
-            <th>Action</th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
         </thead>
 
@@ -49,11 +49,8 @@
         </tr>
 
         <tr th:each="tempUser : ${usersForTable}">
-
             <td th:text="${tempUser.id}"></td>
             <td th:text="${tempUser.username}"></td>
-            <!--            <td th:text="${tempUser.password}"></td>-->
-
             <td>
                 <div class="row">
                     <div class="col-small">
@@ -68,14 +65,15 @@
 
             <td>
                 <div class="row">
-
-                    <form action="#" th:action="@{/admin/delete}" method="post">
-                        <input type="hidden" name="userId"
-                               th:value="${tempUser.id}"/>
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="if (!(confirm('U sur to delete usir?'))) return false">Delete
-                        </button>
-                    </form>
+                    <div class="col-small">
+                        <form action="#" th:action="@{/admin/delete}" method="post">
+                            <input type="hidden" name="userId"
+                                   th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="if (!(confirm('U sur to delete usir?'))) return false">Delete
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </td>
         </tr>
