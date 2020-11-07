@@ -4,10 +4,12 @@ import io.zenbydef.usertracker.annotations.UserCreatePermission;
 import io.zenbydef.usertracker.annotations.UserDeletePermission;
 import io.zenbydef.usertracker.annotations.UserListReadPermission;
 import io.zenbydef.usertracker.annotations.UserUpdatePermission;
-import io.zenbydef.usertracker.dao.RoleDao;
+import io.zenbydef.usertracker.dao.roledao.RoleDao;
 import io.zenbydef.usertracker.entities.Role;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
-import io.zenbydef.usertracker.service.SecurityDetailUserService;
+import io.zenbydef.usertracker.service.roleservice.RoleService;
+import io.zenbydef.usertracker.service.securitydetailuserservice.SecurityDetailUserService;
+import io.zenbydef.usertracker.util.RoleConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -22,38 +24,43 @@ import java.util.stream.Collectors;
 @Transactional
 @RequestMapping("/admin")
 public class AdminController {
-
     private final SecurityDetailUserService securityDetailUserService;
-    private final RoleDao roleDao;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
+    private final RoleService roleService;
+    private final RoleConverter roleConverter;
+    private final PasswordEncoder passwordEncoder;
     private Set<String> stringRolesSet;
 
     @Autowired
     private void setRolesSet() {
-        this.stringRolesSet = roleDao.getRoles().stream().map(Role::getNameOfRole).collect(Collectors.toSet());
+        this.stringRolesSet = roleService
+                .getRoles()
+                .stream()
+                .map(Role::getNameOfRole)
+                .collect(Collectors.toSet());
     }
 
-    public AdminController(SecurityDetailUserService securityDetailUserService, RoleDao roleDao) {
+    public AdminController(SecurityDetailUserService securityDetailUserService,
+                           RoleService roleService,
+                           RoleConverter roleConverter,
+                           PasswordEncoder passwordEncoder) {
         this.securityDetailUserService = securityDetailUserService;
-        this.roleDao = roleDao;
+        this.roleService = roleService;
+        this.roleConverter = roleConverter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @UserListReadPermission
     @GetMapping("/list")
     public ModelAndView listUsers() {
         List<SecurityDetailUser> userList = securityDetailUserService.getUsers();
-        return new ModelAndView("users-table", "usersForTable", userList);
+        return new ModelAndView("admindirectory/users-table", "usersForTable", userList);
     }
 
     @UserCreatePermission
     @GetMapping("/add")
     public ModelAndView addUser() {
         SecurityDetailUser detailUser = new SecurityDetailUser();
-        ModelAndView modelAndView = new ModelAndView("user-form");
+        ModelAndView modelAndView = new ModelAndView("admindirectory/user-form");
         modelAndView.addObject("user", detailUser);
         modelAndView.addObject("allRoles", stringRolesSet);
         return modelAndView;
@@ -61,8 +68,9 @@ public class AdminController {
 
     @UserCreatePermission
     @PostMapping("/save")
-    public ModelAndView saveUser(@ModelAttribute("user") SecurityDetailUser user, @RequestParam("roles") String[] roles) {
-        user.setRoles(convertRoles(String.join(" ", roles)));
+    public ModelAndView saveUser(@ModelAttribute("user") SecurityDetailUser user,
+                                 @RequestParam("roles") String[] roles) {
+        user.setRoles(roleConverter.convertRoles(String.join(" ", roles)));
         user.setPassword(passwordEncoder.encode((user.getPassword())));
         securityDetailUserService.saveUser(user);
         return new ModelAndView("redirect:/admin/list");
@@ -72,7 +80,7 @@ public class AdminController {
     @PostMapping("/update")
     public ModelAndView showFormForUpdate(@RequestParam("userId") Long userId) {
         SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
-        ModelAndView modelAndView = new ModelAndView("user-update");
+        ModelAndView modelAndView = new ModelAndView("admindirectory/user-update");
         modelAndView.addObject("userId", userId);
         modelAndView.addObject("username", detailUser.getUsername());
         modelAndView.addObject("allRoles", stringRolesSet);
@@ -86,7 +94,7 @@ public class AdminController {
                                         @RequestParam("roles") String[] roles) {
         SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
         detailUser.setUsername(username);
-        detailUser.setRoles(convertRoles(String.join(" ", roles)));
+        detailUser.setRoles(roleConverter.convertRoles(String.join(" ", roles)));
         securityDetailUserService.saveUser(detailUser);
         return new ModelAndView("redirect:/admin/list");
     }
@@ -94,7 +102,7 @@ public class AdminController {
     @UserUpdatePermission
     @GetMapping("/updatepass")
     public ModelAndView updatePassword(@RequestParam("userId") Long userId) {
-        ModelAndView modelAndView = new ModelAndView("user-change-pass");
+        ModelAndView modelAndView = new ModelAndView("admindirectory/user-change-pass");
         modelAndView.addObject("userId", userId);
         return modelAndView;
     }
@@ -113,24 +121,5 @@ public class AdminController {
     public ModelAndView deleteUser(@RequestParam("userId") Long userId) {
         securityDetailUserService.deleteUser(userId);
         return new ModelAndView("redirect:/admin/list");
-    }
-
-    private Collection<Role> convertRoles(String roles) {
-        Set<Role> convertedRoleSet = new HashSet<>();
-        Role roleToFind = new Role();
-        for (String s : roles.split(" ")) {
-            roleToFind = getRole(s, roleToFind);
-            convertedRoleSet.add(roleToFind);
-        }
-        return convertedRoleSet;
-    }
-
-    private Role getRole(String s, Role roleToFind) {
-        for (Role role1 : roleDao.getRoles()) {
-            if (s.equalsIgnoreCase(role1.getNameOfRole())) {
-                roleToFind = role1;
-            }
-        }
-        return roleToFind;
     }
 }

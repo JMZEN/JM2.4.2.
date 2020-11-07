@@ -1,6 +1,6 @@
-package io.zenbydef.usertracker.service;
+package io.zenbydef.usertracker.service.securitydetailuserservice;
 
-import io.zenbydef.usertracker.dao.userdao.SecurityDetailUserDao;
+import io.zenbydef.usertracker.dao.securitydetailuserdao.SecurityDetailUserDao;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

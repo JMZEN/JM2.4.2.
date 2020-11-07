@@ -8,10 +8,9 @@ import java.util.Collection;
 @Entity
 @Table(name = "privileges")
 public class Privilege implements GrantedAuthority {
-
     @Id
     @Column(name = "privilege_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "name")

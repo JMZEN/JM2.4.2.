@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PathController {
     @RequestMapping("/login")
     public String list() {
-        return "login-page";
+        return "login/login-page";
     }
 
     @RequestMapping("/denied")
     public String accessDeniedPage() {
-        return "access-denied";
+        return "status/access-denied";
     }
 }

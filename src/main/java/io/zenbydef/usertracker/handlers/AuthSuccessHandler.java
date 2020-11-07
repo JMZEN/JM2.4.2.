@@ -1,4 +1,4 @@
-package io.zenbydef.usertracker.config;
+package io.zenbydef.usertracker.handlers;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +11,9 @@ import java.io.IOException;
 
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
+                                        HttpServletResponse httpServletResponse,
+                                        Authentication authentication) throws IOException, ServletException {
         var authorities = authentication.getAuthorities();
 
         for (GrantedAuthority grantedAuthority : authorities) {

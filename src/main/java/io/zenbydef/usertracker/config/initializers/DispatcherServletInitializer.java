@@ -1,12 +1,15 @@
-package io.zenbydef.usertracker.config;
+package io.zenbydef.usertracker.config.initializers;
 
+import io.zenbydef.usertracker.config.PersistenceConfig;
+import io.zenbydef.usertracker.config.SecurityConfig;
+import io.zenbydef.usertracker.config.ViewConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class SpringMVCDispatcherServletInitializer
+public class DispatcherServletInitializer
         extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SecurityConfig.class, UserWebTrackerConfig.class};
+        return new Class[]{ViewConfig.class, SecurityConfig.class, PersistenceConfig.class};
     }
 
     @Override

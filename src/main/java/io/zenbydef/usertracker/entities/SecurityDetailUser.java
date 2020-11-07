@@ -15,9 +15,8 @@ import java.util.stream.Collectors;
 @Table(name = "security_user_details")
 @Component
 public class SecurityDetailUser implements UserDetails, CredentialsContainer {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "security_user_id")
     private Long id;
     private String username;

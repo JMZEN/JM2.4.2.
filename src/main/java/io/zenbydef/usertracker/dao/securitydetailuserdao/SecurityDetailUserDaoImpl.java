@@ -1,9 +1,6 @@
-package io.zenbydef.usertracker.dao.userdao;
+package io.zenbydef.usertracker.dao.securitydetailuserdao;
 
-import io.zenbydef.usertracker.dao.RoleDao;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,15 +10,8 @@ import java.util.List;
 
 @Repository
 public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
-
     @PersistenceContext
     private EntityManager entityManager;
-
-    private final PasswordEncoder passwordEncoder;
-
-    public SecurityDetailUserDaoImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public List<SecurityDetailUser> getUsers() {
@@ -48,7 +38,6 @@ public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
     public SecurityDetailUser findUserByName(String userName) {
         TypedQuery<SecurityDetailUser> query = entityManager.createQuery("select user from SecurityDetailUser as user where lower(user.username) like :theUserName ", SecurityDetailUser.class);
         query.setParameter("theUserName", '%' + userName.toLowerCase() + '%');
-
         return query.getSingleResult();
     }
 }

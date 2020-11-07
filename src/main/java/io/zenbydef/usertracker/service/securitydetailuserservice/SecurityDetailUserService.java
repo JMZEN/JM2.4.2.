@@ -1,4 +1,4 @@
-package io.zenbydef.usertracker.service;
+package io.zenbydef.usertracker.service.securitydetailuserservice;
 
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,4 +1,4 @@
-package io.zenbydef.usertracker.dao;
+package io.zenbydef.usertracker.dao.roledao;
 
 import io.zenbydef.usertracker.entities.Role;
 import org.springframework.stereotype.Repository;

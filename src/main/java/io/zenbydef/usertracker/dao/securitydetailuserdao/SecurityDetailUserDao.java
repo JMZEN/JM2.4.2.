@@ -1,4 +1,4 @@
-package io.zenbydef.usertracker.dao.userdao;
+package io.zenbydef.usertracker.dao.securitydetailuserdao;
 
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
 
