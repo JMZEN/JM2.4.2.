@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Add User Form</title>
+    <title>Search Results</title>
+</head>
+<body>
+<div class="container">
+    <h3>Users Directory</h3>
+    <hr>
+
+    <h4>User Search Results</h4>
+
+    <table th:if="${not #lists.isEmpty(users)}" class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${users.empty}">
+            <td colspan="4">No users</td>
+        </tr>
+
+        <tr th:each="tempUser : ${users}">
+
+            <td th:text="${tempUser.firstName}"></td>
+            <td th:text="${tempUser.lastName}"></td>
+            <td th:text="${tempUser.login}"></td>
+
+            <td>
+                <div class="row">
+                    <div class="col-small">
+                        <form action="#" th:action="@{/users/updateuser(userId=${tempUser.id})}" method="post">
+                            <input type="hidden" name="userId" th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-info btn-sm ml-3 mr-1">Update</button>
+                        </form>
+                    </div>
+
+                    <div class="col-small">
+                        <form action="#" th:action="@{/users/deleteuser}" method="post">
+                            <input type="hidden" name="userId"
+                                   th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="if (!(confirm('U sur to delete usir?'))) return false">Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(users)}">
+        <p>
+            No users found. Please try again:
+        </p>
+
+        <form action="#"
+              th:action="@{/users/searchuser}"
+              th:object="${#lists}"
+              method="get">
+            <div class="form-group">
+                <label>
+                    <input type="text" class="form-control" name="theSearchName" placeholder="Enter the Query"/>
+                </label>
+                <br>
+                <input type="submit" value="Search" class="btn btn-primary btn-sm mb-3"/>
+            </div>
+        </form>
+    </div>
+
+    <p>
+        <a th:href="@{/users/list}">
+            <button class="btn btn-primary">Back to Users List</button>
+        </a>
+    </p>
+</div>
+</body>
+</html>

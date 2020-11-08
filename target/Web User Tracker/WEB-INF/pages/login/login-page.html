@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <title>Login Page</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Login page</h1>
+
+    <div th:if="${param.error}" class="alert alert-danger">Invalid username and password.</div>
+    <div th:if="${param.logout}" class="alert alert-success">You have been logged out.</div>
+
+    <form th:action="@{/doLogin}" method="post" class="form-horizontal">
+
+        <div class="form-group">
+            <label class="control-label col-xs-2" for="username"> User Name </label>
+
+            <div class="col-xs-10">
+                <input id="username" type="text" name="username" placeholder="Enter email"/>
+            </div>
+
+            <small id="usernameHelp" class="form-text text-muted">We'll be selling your data to Facebook. Sorry</small>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-xs-2" for="password"> Password </label>
+
+            <div class="col-xs-10">
+                <input id="password" type="password" name="password" placeholder="Enter password"/>
+            </div>
+        </div>
+
+        <div class="form-actions col-xs-offset-2 col-xs-10">
+            <input type="submit" class="btn btn-primary" value="Sign In"/>
+        </div>
+        <br>
+        <input type="reset" class="btn btn-primary" value="Clear"/>
+    </form>
+
+    <div th:insert="~{fragments/footer :: copy}"></div>
+</div>
+</body>
+</html>

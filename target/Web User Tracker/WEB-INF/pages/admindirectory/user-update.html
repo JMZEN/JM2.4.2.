@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Add User Form</title>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/layout :: navbar"></div>
+
+    <p class="h4 mb-4">Update User</p>
+
+    <form action="#" th:action="@{/admin/saveupduser}" method="post">
+        <input type="hidden" name="userId" th:value="*{userId}">
+        <input type="text" name="username" th:value="*{username}" class="form-control mb-4 col-4" placeholder="Login">
+
+        Roles
+        <th:block th:each="role : ${allRoles}">
+            <label>
+                <input type="radio" name="roles" th:value="${role}"/>
+            </label>
+            <label th:text="${role}"></label>
+        </th:block>
+        <br>
+        <button type="submit" class="btn btn-info col-2">Save</button>
+    </form>
+    <br>
+
+
+    <a th:href="@{/admin/updatepass(userId=${userId})}">
+        <button class="btn btn-primary">Change password</button>
+    </a>
+    <br>
+
+    <br>
+    <a th:href="@{/admin/list}">
+        <button class="btn btn-primary">Back to Users List</button>
+    </a>
+    <br>
+    <div th:insert="~{fragments/footer :: copy}"></div>
+</div>
+</body>
+</html>

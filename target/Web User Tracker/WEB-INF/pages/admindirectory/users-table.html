@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Admin Directory</title>
+</head>
+
+<body>
+<div class="container">
+    <div th:replace="fragments/layout :: navbar"></div>
+
+    <!--    <form action="#"-->
+    <!--          th:action="@{/users/searchuser}"-->
+    <!--          th:object="${#lists}"-->
+    <!--          method="get">-->
+    <!--        <div class="form-group">-->
+    <!--            <label>-->
+    <!--                <input type="text" name="theSearchName" class="form-control"/>-->
+    <!--            </label>-->
+    <!--            <br>-->
+    <!--            <input type="submit" value="Search" class="btn btn-primary"/>-->
+    <!--        </div>-->
+    <!--    </form>-->
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Login</th>
+            <th>User info</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${usersForTable.empty}">
+            <td colspan="5">No users</td>
+        </tr>
+        <tr th:each="tempUser : ${usersForTable}">
+            <td th:text="${tempUser.id}"></td>
+            <td th:text="${tempUser.username}"></td>
+            <td>
+                <div class="row">
+                    <div class="col-small">
+                        <form action="#" th:action="@{/admin/user(userId=${tempUser.id})}" method="get">
+                            <input type="hidden" name="userId" th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-info btn-sm ml-3 mr-1">Show Info
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+
+            <td>
+                <div class="row">
+                    <div class="col-small">
+                        <form action="#" th:action="@{/admin/update(userId=${tempUser.id})}" method="post">
+                            <input type="hidden" name="userId" th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-info btn-sm ml-3 mr-1">Update
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+
+            <td>
+                <div class="row">
+                    <div class="col-small">
+                        <form action="#" th:action="@{/admin/delete}" method="post">
+                            <input type="hidden" name="userId"
+                                   th:value="${tempUser.id}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="if (!(confirm('U sur to delete usir?'))) return false">Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:insert="~{fragments/footer :: copy}"></div>
+</div>
+</body>
+</html>
