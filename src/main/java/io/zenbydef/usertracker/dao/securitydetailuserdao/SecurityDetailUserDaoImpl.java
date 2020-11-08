@@ -15,7 +15,7 @@ public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
 
     @Override
     public List<SecurityDetailUser> getUsers() {
-        return entityManager.createQuery("select user from SecurityDetailUser as user", SecurityDetailUser.class).getResultList();
+        return entityManager.createNamedQuery("User.getUsers", SecurityDetailUser.class).getResultList();
     }
 
     @Override
@@ -36,7 +36,8 @@ public class SecurityDetailUserDaoImpl implements SecurityDetailUserDao {
 
     @Override
     public SecurityDetailUser findUserByName(String userName) {
-        TypedQuery<SecurityDetailUser> query = entityManager.createQuery("select user from SecurityDetailUser as user where lower(user.username) like :theUserName ", SecurityDetailUser.class);
+        TypedQuery<SecurityDetailUser> query =
+                entityManager.createNamedQuery("User.findUserByName", SecurityDetailUser.class);
         query.setParameter("theUserName", '%' + userName.toLowerCase() + '%');
         return query.getSingleResult();
     }

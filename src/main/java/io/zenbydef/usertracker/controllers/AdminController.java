@@ -57,7 +57,11 @@ public class AdminController {
     @GetMapping("user")
     public ModelAndView getUserProfile(@RequestParam("userId") Long userId) {
         SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
-        return new ModelAndView("userdirectory/user-page", "user", detailUser);
+        Collection<String> roles = detailUser.getRolesAsStrings();
+        ModelAndView modelAndView = new ModelAndView("userdirectory/user-page");
+        modelAndView.addObject("user", detailUser);
+        modelAndView.addObject("userRoles", roles);
+        return modelAndView;
     }
 
     @UserCreatePermission

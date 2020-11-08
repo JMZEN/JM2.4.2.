@@ -1,7 +1,5 @@
 package io.zenbydef.usertracker.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,19 +13,16 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.Objects;
 import java.util.Properties;
 
-@EnableWebMvc
 @Configuration
 @ComponentScan("io")
 @PropertySource({"classpath:persistence-mysql.properties"})
 @EnableTransactionManagement
-public class PersistenceConfig implements WebMvcConfigurer {
+public class PersistenceConfig {
     private final Environment env;
 
     public PersistenceConfig(Environment env) {

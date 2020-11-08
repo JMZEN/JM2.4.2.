@@ -26,7 +26,7 @@
         <input type="text" th:field="*{username}" class="form-control mb-4 col-4" placeholder="Login">
         <br>
         <input type="password" th:field="*{password}" class="form-control mb-4 col-4" placeholder="Password">
-        Roles
+        Roles:
         <th:block th:each="role : ${allRoles}">
             <label>
                 <input type="radio" name="roles" th:value="${role}"/>

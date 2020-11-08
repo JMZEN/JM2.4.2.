@@ -43,7 +43,7 @@
         </thead>
         <tbody>
         <tr th:if="${usersForTable.empty}">
-            <td colspan="4">No users</td>
+            <td colspan="5">No users</td>
         </tr>
         <tr th:each="tempUser : ${usersForTable}">
             <td th:text="${tempUser.id}"></td>

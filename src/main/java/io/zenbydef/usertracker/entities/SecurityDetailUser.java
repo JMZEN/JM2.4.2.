@@ -14,7 +14,13 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "security_user_details")
 @Component
-public class SecurityDetailUser implements UserDetails, CredentialsContainer {
+@NamedQueries({
+        @NamedQuery(name = "User.getUsers",
+                query = "select user from SecurityDetailUser as user"),
+        @NamedQuery(name = "User.findUserByName",
+                query = "select user from SecurityDetailUser as user " +
+                        "where lower(user.username) like :theUserName")})
+public class SecurityDetailUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "security_user_id")
@@ -67,6 +73,12 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
         this.password = password;
     }
 
+    public Collection<String> getRolesAsStrings() {
+        return roles.stream()
+                .map(role -> role.getNameOfRole().replaceAll("[^A-Z]", ""))
+                .collect(Collectors.toList());
+    }
+
     public Collection<Role> getRoles() {
         return roles;
     }
@@ -93,11 +105,6 @@ public class SecurityDetailUser implements UserDetails, CredentialsContainer {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public void eraseCredentials() {
-        this.password = null;
     }
 
     @Override

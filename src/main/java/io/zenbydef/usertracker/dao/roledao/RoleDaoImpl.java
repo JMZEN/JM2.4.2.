@@ -14,10 +14,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Role getRoleByName(String name) {
-        Role role = entityManager.find(Role.class, name);
-        System.out.println(role.toString());
-
-        return role;
+        return entityManager.find(Role.class, name);
     }
 
     @Override
@@ -29,6 +26,4 @@ public class RoleDaoImpl implements RoleDao {
     public Role getOneRole(Long id) {
         return entityManager.find(Role.class, id);
     }
-
-
 }
