@@ -1,9 +1,6 @@
 package io.zenbydef.usertracker.controllers;
 
-import io.zenbydef.usertracker.annotations.UserCreatePermission;
-import io.zenbydef.usertracker.annotations.UserDeletePermission;
-import io.zenbydef.usertracker.annotations.UserListReadPermission;
-import io.zenbydef.usertracker.annotations.UserUpdatePermission;
+import io.zenbydef.usertracker.annotations.*;
 import io.zenbydef.usertracker.dao.roledao.RoleDao;
 import io.zenbydef.usertracker.entities.Role;
 import io.zenbydef.usertracker.entities.SecurityDetailUser;
@@ -54,6 +51,13 @@ public class AdminController {
     public ModelAndView listUsers() {
         List<SecurityDetailUser> userList = securityDetailUserService.getUsers();
         return new ModelAndView("admindirectory/users-table", "usersForTable", userList);
+    }
+
+    @UserViewProfilePermission
+    @GetMapping("user")
+    public ModelAndView getUserProfile(@RequestParam("userId") Long userId) {
+        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        return new ModelAndView("userdirectory/user-page", "user", detailUser);
     }
 
     @UserCreatePermission

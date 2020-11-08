@@ -2,8 +2,6 @@ package io.zenbydef.usertracker.config;
 
 import io.zenbydef.usertracker.handlers.AuthSuccessHandler;
 import io.zenbydef.usertracker.service.securitydetailuserservice.SecurityDetailUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,24 +16,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SecurityDetailUserService securityDetailUserService;
-
-    public SecurityConfig(SecurityDetailUserService securityDetailUserService) {
-        this.securityDetailUserService = securityDetailUserService;
-    }
+//    private final SecurityDetailUserService securityDetailUserService;
+//
+//    public SecurityConfig(SecurityDetailUserService securityDetailUserService) {
+//        this.securityDetailUserService = securityDetailUserService;
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(securityDetailUserService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setUserDetailsService(securityDetailUserService);
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+//        return daoAuthenticationProvider;
+//    }
 
     @Bean
     public AuthSuccessHandler authSuccessHandler() {

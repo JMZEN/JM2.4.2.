@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/xhtml"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -14,7 +17,7 @@
 <body>
 <div th:replace="fragments/layout :: navbar"></div>
 <div class="row justify-content-center">
-<dl>
+    <dl>
         <dt>ID</dt>
         <dd id="id" th:text="${user.id}">Id</dd>
         <dt>Username</dt>
@@ -22,6 +25,11 @@
         <dt>Authorities</dt>
         <dd id="authorities" th:text="${user.getAuthorities()}">Authorities</dd>
     </dl>
+</div>
+<div class="row justify-content-center">
+    <a sec:authorize="${hasAuthority('user.list.read')}" th:href="@{/admin/list}">
+        <button class="btn btn-primary">Back to Users List</button>
+    </a>
 </div>
 <div th:insert="~{fragments/footer :: copy}"></div>
 </body>
