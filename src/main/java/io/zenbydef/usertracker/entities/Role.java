@@ -68,18 +68,15 @@ public class Role {
         this.privileges = privileges;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Role role = (Role) o;
-
-        if (id != null ? !id.equals(role.id) : role.id != null) return false;
-        if (nameOfRole != null ? !nameOfRole.equals(role.nameOfRole) : role.nameOfRole != null) return false;
-        if (users != null ? !users.equals(role.users) : role.users != null) return false;
-        return privileges != null ? privileges.equals(role.privileges) : role.privileges == null;
+        return Objects.equals(id, role.id) &&
+                Objects.equals(nameOfRole, role.nameOfRole) &&
+                Objects.equals(users, role.users) &&
+                Objects.equals(privileges, role.privileges);
     }
 
     @Override

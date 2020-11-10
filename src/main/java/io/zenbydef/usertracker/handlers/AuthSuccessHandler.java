@@ -16,11 +16,8 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
-            if (grantedAuthority.getAuthority().equals("user.view.profile")) {
-                httpServletResponse.sendRedirect("/user");
-            } else {
-                httpServletResponse.sendRedirect("/admin/list");
-            }
+            httpServletResponse.sendRedirect(grantedAuthority.getAuthority().equals("user.view.profile")
+                    ? "/user" : "/admin/list");
             break;
         }
     }

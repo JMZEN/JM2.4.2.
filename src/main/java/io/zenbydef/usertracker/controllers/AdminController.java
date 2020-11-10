@@ -27,15 +27,6 @@ public class AdminController {
     private final PasswordEncoder passwordEncoder;
     private Set<String> stringRolesSet;
 
-    @Autowired
-    private void setRolesSet() {
-        this.stringRolesSet = roleService
-                .getRoles()
-                .stream()
-                .map(Role::getNameOfRole)
-                .collect(Collectors.toSet());
-    }
-
     public AdminController(SecurityDetailUserService securityDetailUserService,
                            RoleService roleService,
                            RoleConverter roleConverter,
@@ -44,6 +35,14 @@ public class AdminController {
         this.roleService = roleService;
         this.roleConverter = roleConverter;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Autowired
+    private void setRolesSet() {
+        this.stringRolesSet = roleService.getRoles()
+                .stream()
+                .map(Role::getNameOfRole)
+                .collect(Collectors.toSet());
     }
 
     @UserListReadPermission

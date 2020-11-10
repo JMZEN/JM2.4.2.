@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -45,10 +46,6 @@ public class SecurityDetailUserServiceImpl implements SecurityDetailUserService 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final SecurityDetailUser user = userDao.findUserByName(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("No user found with this username: " + username);
-        }
-        return user;
+        return Objects.requireNonNull(userDao.findUserByName(username));
     }
 }

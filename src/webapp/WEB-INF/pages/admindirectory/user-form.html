@@ -14,14 +14,11 @@
 <body>
 <div class="container">
     <div th:replace="fragments/layout :: navbar"></div>
-
     <p class="h4 mb-4">Save User</p>
-
     <form action="#"
           th:action="@{/admin/save}"
           th:object="${user}"
           method="post">
-
         <input type="hidden" th:field="*{id}">
         <input type="text" th:field="*{username}" class="form-control mb-4 col-4" placeholder="Login">
         <br>
