@@ -3,7 +3,6 @@ package io.zenbydef.usertracker.controllers;
 import io.zenbydef.usertracker.annotations.UserViewProfilePermission;
 import io.zenbydef.usertracker.entities.User;
 import io.zenbydef.usertracker.service.userservice.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,11 @@ import java.security.Principal;
 @RequestMapping
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @UserViewProfilePermission
     @GetMapping("/user")

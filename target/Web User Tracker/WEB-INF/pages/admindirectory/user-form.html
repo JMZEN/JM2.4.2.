@@ -26,7 +26,7 @@
         Roles:
         <th:block th:each="role : ${allRoles}">
             <label>
-                <input type="radio" name="roles" th:value="${role}"/>
+                <input type="checkbox" name="roles" th:value="${role}"/>
             </label>
             <label th:text="${role}"></label>
         </th:block>

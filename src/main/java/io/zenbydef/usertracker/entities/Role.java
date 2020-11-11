@@ -10,6 +10,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles")
+@NamedQueries({
+        @NamedQuery(name = "Role.getByName",
+                query = "select role from Role as role " +
+                        "where role.nameOfRole = :name"),
+        @NamedQuery(name = "Role.getAllRoles",
+                query = "select role from Role as role")})
 public class Role {
     @Id
     @Column(name = "role_id")
@@ -18,7 +24,7 @@ public class Role {
     @Column(name = "name")
     private String nameOfRole;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<User> users;
 
     @ManyToMany(fetch = FetchType.LAZY)
