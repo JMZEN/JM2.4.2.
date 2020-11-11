@@ -1,7 +1,6 @@
 package io.zenbydef.usertracker.util;
 
 import io.zenbydef.usertracker.entities.Role;
-import io.zenbydef.usertracker.service.roleservice.RoleService;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -10,26 +9,20 @@ import java.util.Set;
 
 @Component
 public class RoleConverter {
-    private final RoleService roleService;
-
-    public RoleConverter(RoleService roleService) {
-        this.roleService = roleService;
-    }
-
-    public Collection<Role> convertRoles(String roles) {
+    public Collection<Role> convertRoles(String roles, Set<Role> rolesSet) {
         Set<Role> convertedRoleSet = new HashSet<>();
-        Role roleToFind = new Role();
         for (String s : roles.split(" ")) {
-            roleToFind = getRole(s, roleToFind);
+            Role roleToFind = getRole(s, rolesSet);
             convertedRoleSet.add(roleToFind);
         }
         return convertedRoleSet;
     }
 
-    private Role getRole(String s, Role roleToFind) {
-        for (Role role1 : roleService.getRoles()) {
-            if (s.equalsIgnoreCase(role1.getNameOfRole())) {
-                roleToFind = role1;
+    private Role getRole(String s, Set<Role> rolesSet) {
+        Role roleToFind = new Role();
+        for (Role role : rolesSet) {
+            if (s.equalsIgnoreCase(role.getNameOfRole())) {
+                roleToFind = role;
             }
         }
         return roleToFind;

@@ -11,15 +11,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "security_user_details")
+@Table(name = "users")
 @Component
 @NamedQueries({
         @NamedQuery(name = "User.getUsers",
-                query = "select user from SecurityDetailUser as user"),
+                query = "select user from User as user"),
         @NamedQuery(name = "User.findUserByName",
-                query = "select user from SecurityDetailUser as user " +
-                        "where lower(user.username) like :theUserName")})
-public class SecurityDetailUser implements UserDetails {
+                query = "select user from User as user " +
+                        "where lower(user.username) = :theUserName")})
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "security_user_id")
@@ -28,13 +28,13 @@ public class SecurityDetailUser implements UserDetails {
     private String password;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "security_user_id", referencedColumnName = "security_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     private Collection<Role> roles;
 
-    public SecurityDetailUser() {
+    public User() {
     }
 
     @Transient
@@ -74,7 +74,7 @@ public class SecurityDetailUser implements UserDetails {
 
     public Collection<String> getRolesAsStrings() {
         return roles.stream()
-                .map(role -> role.getNameOfRole().replaceAll("[^A-Z]", ""))
+                .map(Role::getNameOfRole)
                 .collect(Collectors.toList());
     }
 

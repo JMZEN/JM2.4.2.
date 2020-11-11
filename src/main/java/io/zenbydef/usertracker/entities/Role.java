@@ -19,10 +19,9 @@ public class Role {
     private String nameOfRole;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<SecurityDetailUser> users;
+    private Set<User> users;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.LAZY)
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "privilege_id"))
@@ -52,11 +51,11 @@ public class Role {
         this.nameOfRole = nameOfRole;
     }
 
-    public Set<SecurityDetailUser> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<SecurityDetailUser> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 

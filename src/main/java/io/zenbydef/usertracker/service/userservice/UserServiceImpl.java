@@ -1,7 +1,7 @@
-package io.zenbydef.usertracker.service.securitydetailuserservice;
+package io.zenbydef.usertracker.service.userservice;
 
-import io.zenbydef.usertracker.dao.securitydetailuserdao.SecurityDetailUserDao;
-import io.zenbydef.usertracker.entities.SecurityDetailUser;
+import io.zenbydef.usertracker.dao.securitydetailuserdao.UserDao;
+import io.zenbydef.usertracker.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,25 +12,25 @@ import java.util.Objects;
 
 @Service
 @Transactional
-public class SecurityDetailUserServiceImpl implements SecurityDetailUserService {
-    private final SecurityDetailUserDao userDao;
+public class UserServiceImpl implements UserService {
+    private final UserDao userDao;
 
-    public SecurityDetailUserServiceImpl(SecurityDetailUserDao userDao) {
+    public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
-    public List<SecurityDetailUser> getUsers() {
+    public List<User> getUsers() {
         return userDao.getUsers();
     }
 
     @Override
-    public void saveUser(SecurityDetailUser user) {
+    public void saveUser(User user) {
         userDao.saveUser(user);
     }
 
     @Override
-    public SecurityDetailUser getUserById(Long id) {
+    public User getUserById(Long id) {
         return userDao.getUserById(id);
     }
 
@@ -40,7 +40,7 @@ public class SecurityDetailUserServiceImpl implements SecurityDetailUserService 
     }
 
     @Override
-    public SecurityDetailUser findUserByName(String userName) {
+    public User findUserByName(String userName) {
         return userDao.findUserByName(userName);
     }
 

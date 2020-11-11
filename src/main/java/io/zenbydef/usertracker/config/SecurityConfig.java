@@ -1,7 +1,7 @@
 package io.zenbydef.usertracker.config;
 
 import io.zenbydef.usertracker.handlers.AuthSuccessHandler;
-import io.zenbydef.usertracker.service.securitydetailuserservice.SecurityDetailUserService;
+import io.zenbydef.usertracker.service.userservice.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,10 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SecurityDetailUserService securityDetailUserService;
+    private final UserService userService;
 
-    public SecurityConfig(SecurityDetailUserService securityDetailUserService) {
-        this.securityDetailUserService = securityDetailUserService;
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Bean
@@ -30,13 +30,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(securityDetailUserService);
+        daoAuthenticationProvider.setUserDetailsService(userService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
 
-    @Bean
-    public AuthSuccessHandler authSuccessHandler() {
+    private AuthSuccessHandler authSuccessHandler() {
         return new AuthSuccessHandler();
     }
 

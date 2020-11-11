@@ -1,11 +1,10 @@
 package io.zenbydef.usertracker.controllers;
 
 import io.zenbydef.usertracker.annotations.*;
-import io.zenbydef.usertracker.dao.roledao.RoleDao;
 import io.zenbydef.usertracker.entities.Role;
-import io.zenbydef.usertracker.entities.SecurityDetailUser;
+import io.zenbydef.usertracker.entities.User;
 import io.zenbydef.usertracker.service.roleservice.RoleService;
-import io.zenbydef.usertracker.service.securitydetailuserservice.SecurityDetailUserService;
+import io.zenbydef.usertracker.service.userservice.UserService;
 import io.zenbydef.usertracker.util.RoleConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,41 +20,47 @@ import java.util.stream.Collectors;
 @Transactional
 @RequestMapping("/admin")
 public class AdminController {
-    private final SecurityDetailUserService securityDetailUserService;
+    private final UserService userService;
     private final RoleService roleService;
     private final RoleConverter roleConverter;
     private final PasswordEncoder passwordEncoder;
     private Set<String> stringRolesSet;
+    private Set<Role> rolesSet;
 
-    public AdminController(SecurityDetailUserService securityDetailUserService,
+    public AdminController(UserService userService,
                            RoleService roleService,
                            RoleConverter roleConverter,
                            PasswordEncoder passwordEncoder) {
-        this.securityDetailUserService = securityDetailUserService;
+        this.userService = userService;
         this.roleService = roleService;
         this.roleConverter = roleConverter;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Autowired
-    private void setRolesSet() {
+    private void setStringRolesSet() {
         this.stringRolesSet = roleService.getRoles()
                 .stream()
                 .map(Role::getNameOfRole)
                 .collect(Collectors.toSet());
     }
 
+    @Autowired
+    private void setRolesSet() {
+        this.rolesSet = new HashSet<>(roleService.getRoles());
+    }
+
     @UserListReadPermission
     @GetMapping("/list")
     public ModelAndView listUsers() {
-        List<SecurityDetailUser> userList = securityDetailUserService.getUsers();
+        List<User> userList = userService.getUsers();
         return new ModelAndView("admindirectory/users-table", "usersForTable", userList);
     }
 
     @UserViewProfilePermission
     @GetMapping("user")
     public ModelAndView getUserProfile(@RequestParam("userId") Long userId) {
-        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        User detailUser = userService.getUserById(userId);
         Collection<String> roles = detailUser.getRolesAsStrings();
         ModelAndView modelAndView = new ModelAndView("userdirectory/user-page");
         modelAndView.addObject("user", detailUser);
@@ -66,7 +71,7 @@ public class AdminController {
     @UserCreatePermission
     @GetMapping("/add")
     public ModelAndView addUser() {
-        SecurityDetailUser detailUser = new SecurityDetailUser();
+        User detailUser = new User();
         ModelAndView modelAndView = new ModelAndView("admindirectory/user-form");
         modelAndView.addObject("user", detailUser);
         modelAndView.addObject("allRoles", stringRolesSet);
@@ -75,18 +80,18 @@ public class AdminController {
 
     @UserCreatePermission
     @PostMapping("/save")
-    public ModelAndView saveUser(@ModelAttribute("user") SecurityDetailUser user,
+    public ModelAndView saveUser(@ModelAttribute("user") User user,
                                  @RequestParam("roles") String[] roles) {
-        user.setRoles(roleConverter.convertRoles(String.join(" ", roles)));
+        user.setRoles(roleConverter.convertRoles(String.join(" ", roles), rolesSet));
         user.setPassword(passwordEncoder.encode((user.getPassword())));
-        securityDetailUserService.saveUser(user);
+        userService.saveUser(user);
         return new ModelAndView("redirect:/admin/list");
     }
 
     @UserUpdatePermission
     @PostMapping("/update")
     public ModelAndView showFormForUpdate(@RequestParam("userId") Long userId) {
-        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        User detailUser = userService.getUserById(userId);
         ModelAndView modelAndView = new ModelAndView("admindirectory/user-update");
         modelAndView.addObject("userId", userId);
         modelAndView.addObject("username", detailUser.getUsername());
@@ -99,10 +104,10 @@ public class AdminController {
     public ModelAndView saveUpdatedUser(@RequestParam("userId") Long userId,
                                         @RequestParam("username") String username,
                                         @RequestParam("roles") String[] roles) {
-        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        User detailUser = userService.getUserById(userId);
         detailUser.setUsername(username);
-        detailUser.setRoles(roleConverter.convertRoles(String.join(" ", roles)));
-        securityDetailUserService.saveUser(detailUser);
+        detailUser.setRoles(roleConverter.convertRoles(String.join(" ", roles), rolesSet));
+        userService.saveUser(detailUser);
         return new ModelAndView("redirect:/admin/list");
     }
 
@@ -117,16 +122,16 @@ public class AdminController {
     @UserUpdatePermission
     @PostMapping("/savepass")
     public ModelAndView savePassword(@RequestParam("userId") Long userId, @RequestParam("pass") String password) {
-        SecurityDetailUser detailUser = securityDetailUserService.getUserById(userId);
+        User detailUser = userService.getUserById(userId);
         detailUser.setPassword(passwordEncoder.encode((password)));
-        securityDetailUserService.saveUser(detailUser);
+        userService.saveUser(detailUser);
         return new ModelAndView("redirect:/admin/list");
     }
 
     @UserDeletePermission
     @PostMapping("/delete")
     public ModelAndView deleteUser(@RequestParam("userId") Long userId) {
-        securityDetailUserService.deleteUser(userId);
+        userService.deleteUser(userId);
         return new ModelAndView("redirect:/admin/list");
     }
 }
