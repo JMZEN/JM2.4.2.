@@ -79,17 +79,17 @@ public class AdminController {
     }
 
     @UserCreatePermission
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ModelAndView saveUser(@ModelAttribute("user") User user,
                                  @RequestParam("roles") String[] roles) {
-        user.setRoles(roleConverter.convertRoles(String.join(" ", roles), rolesSet));
+        user.setRoles(roleConverter.convertRoles(roles, rolesSet));
         user.setPassword(passwordEncoder.encode((user.getPassword())));
         userService.saveUser(user);
         return new ModelAndView("redirect:/admin/list");
     }
 
     @UserUpdatePermission
-    @PostMapping("/update")
+    @GetMapping("/update")
     public ModelAndView showFormForUpdate(@RequestParam("userId") Long userId) {
         User detailUser = userService.getUserById(userId);
         ModelAndView modelAndView = new ModelAndView("admindirectory/user-update");
@@ -100,13 +100,13 @@ public class AdminController {
     }
 
     @UserCreatePermission
-    @PostMapping("/saveupduser")
+    @PostMapping("/update")
     public ModelAndView saveUpdatedUser(@RequestParam("userId") Long userId,
                                         @RequestParam("username") String username,
                                         @RequestParam("roles") String[] roles) {
         User detailUser = userService.getUserById(userId);
         detailUser.setUsername(username);
-        detailUser.setRoles(roleConverter.convertRoles(String.join(" ", roles), rolesSet));
+        detailUser.setRoles(roleConverter.convertRoles(roles, rolesSet));
         userService.saveUser(detailUser);
         return new ModelAndView("redirect:/admin/list");
     }
@@ -120,7 +120,7 @@ public class AdminController {
     }
 
     @UserUpdatePermission
-    @PostMapping("/savepass")
+    @PostMapping("/updatepass")
     public ModelAndView savePassword(@RequestParam("userId") Long userId, @RequestParam("pass") String password) {
         User detailUser = userService.getUserById(userId);
         detailUser.setPassword(passwordEncoder.encode((password)));

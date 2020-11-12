@@ -9,11 +9,13 @@ import java.util.Set;
 
 @Component
 public class RoleConverter {
-    public Collection<Role> convertRoles(String roles, Set<Role> rolesSet) {
+    public Set<Role> convertRoles(String[] roles, Set<Role> rolesSet) {
         Set<Role> convertedRoleSet = new HashSet<>();
-        for (String s : roles.split(" ")) {
-            Role roleToFind = getRole(s, rolesSet);
-            convertedRoleSet.add(roleToFind);
+        for (String s : roles) {
+            if (!s.equals("")) {
+                Role roleToFind = getRole(s, rolesSet);
+                convertedRoleSet.add(roleToFind);
+            }
         }
         return convertedRoleSet;
     }

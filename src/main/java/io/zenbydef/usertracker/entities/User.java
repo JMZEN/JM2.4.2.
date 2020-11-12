@@ -27,7 +27,10 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,    cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "security_user_id", referencedColumnName = "security_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
@@ -41,7 +44,6 @@ public class User implements UserDetails {
         return this.roles.stream()
                 .map(Role::getPrivileges)
                 .flatMap(Collection::stream)
-                .map(privilege -> new SimpleGrantedAuthority(privilege.getAuthority()))
                 .collect(Collectors.toSet());
     }
 

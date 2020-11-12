@@ -16,7 +16,7 @@
     <div th:replace="fragments/layout :: navbar"></div>
     <p class="h4 mb-4">Save User</p>
     <form action="#"
-          th:action="@{/admin/save}"
+          th:action="@{/admin/add}"
           th:object="${user}"
           method="post">
         <input type="hidden" th:field="*{id}">

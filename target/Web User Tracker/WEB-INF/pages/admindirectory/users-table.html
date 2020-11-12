@@ -52,7 +52,7 @@
                     </form>
                 </td>
                 <td>
-                    <form action="#" th:action="@{/admin/update(userId=${tempUser.id})}" method="post">
+                    <form action="#" th:action="@{/admin/update}" method="get">
                         <input type="hidden" name="userId" th:value="${tempUser.id}"/>
                         <button type="submit" class="btn btn-success"><i class="fas fa-edit"></i>Update
                         </button>

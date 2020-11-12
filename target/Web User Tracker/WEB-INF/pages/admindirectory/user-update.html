@@ -15,13 +15,13 @@
 <div class="container">
     <div th:replace="fragments/layout :: navbar"></div>
     <p class="h4 mb-4">Update User</p>
-    <form action="#" th:action="@{/admin/saveupduser}" method="post">
-        <input type="hidden" name="userId" th:value="*{userId}">
-        <input type="text" name="username" th:value="*{username}" class="form-control mb-4 col-4" placeholder="Login">
+    <form action="#" th:action="@{/admin/update(userId=${userId}, username=${username}, roles=${roles})}" method="post">
+        <input type="hidden"  th:value="${userId}">
+        <input type="text"  th:value="${username}" class="form-control mb-4 col-4" placeholder="Login">
         Roles
         <th:block th:each="role : ${allRoles}">
             <label>
-                <input type="checkbox" name="roles" th:value="${role}"/>
+                <input type="checkbox" name="roles" th:value="*{role}"/>
             </label>
             <label th:text="${role}"></label>
         </th:block>
