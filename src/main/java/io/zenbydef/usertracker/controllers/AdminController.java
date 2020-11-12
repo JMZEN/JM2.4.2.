@@ -80,12 +80,12 @@ public class AdminController {
 
     @UserCreatePermission
     @PostMapping("/add")
-    public ModelAndView saveUser(@ModelAttribute("user") User user,
+    public String saveUser(@ModelAttribute("user") User user,
                                  @RequestParam("roles") String[] roles) {
         user.setRoles(roleConverter.convertRoles(roles, rolesSet));
         user.setPassword(passwordEncoder.encode((user.getPassword())));
         userService.saveUser(user);
-        return new ModelAndView("redirect:/admin/list");
+        return "redirect:/admin/list";
     }
 
     @UserUpdatePermission
@@ -101,14 +101,14 @@ public class AdminController {
 
     @UserCreatePermission
     @PostMapping("/update")
-    public ModelAndView saveUpdatedUser(@RequestParam("userId") Long userId,
+    public String saveUpdatedUser(@RequestParam("userId") Long userId,
                                         @RequestParam("username") String username,
                                         @RequestParam("roles") String[] roles) {
         User detailUser = userService.getUserById(userId);
         detailUser.setUsername(username);
         detailUser.setRoles(roleConverter.convertRoles(roles, rolesSet));
         userService.saveUser(detailUser);
-        return new ModelAndView("redirect:/admin/list");
+        return "redirect:/admin/list";
     }
 
     @UserUpdatePermission
@@ -121,11 +121,11 @@ public class AdminController {
 
     @UserUpdatePermission
     @PostMapping("/updatepass")
-    public ModelAndView savePassword(@RequestParam("userId") Long userId, @RequestParam("pass") String password) {
+    public String savePassword(@RequestParam("userId") Long userId, @RequestParam("pass") String password) {
         User detailUser = userService.getUserById(userId);
         detailUser.setPassword(passwordEncoder.encode((password)));
         userService.saveUser(detailUser);
-        return new ModelAndView("redirect:/admin/list");
+        return "redirect:/admin/list";
     }
 
     @UserDeletePermission
