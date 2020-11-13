@@ -45,7 +45,7 @@
                 <td th:text="${tempUser.id}"></td>
                 <td th:text="${tempUser.username}"></td>
                 <td>
-                    <form action="#" th:action="@{/admin/user(userId=${tempUser.id})}" method="get">
+                    <form action="#" th:action="@{/admin/user}" method="get">
                         <input type="hidden" name="userId" th:value="${tempUser.id}"/>
                         <button type="submit" class="btn btn-primary"><i class="far fa-eye"></i>Show Info
                         </button>
@@ -60,8 +60,7 @@
                 </td>
                 <td>
                     <form action="#" th:action="@{/admin/delete}" method="post">
-                        <input type="hidden" name="userId"
-                               th:value="${tempUser.id}"/>
+                        <input type="hidden" name="userId" th:value="${tempUser.id}"/>
                         <button type="submit" class="btn btn-danger"
                                 onclick="if (!(confirm('U sur to delete usir?'))) return false">
                             <i class="far fa-trash-alt"></i>Delete
