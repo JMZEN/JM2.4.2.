@@ -38,13 +38,13 @@ public class RoleManager {
     }
 
     private Role getRole(String s) {
-        Role roleToFind = new Role();
+        Role roleToFind = null;
         for (Role role : roles) {
             if (s.equalsIgnoreCase(role.getNameOfRole())) {
                 roleToFind = role;
             }
         }
-        return roleToFind;
+        return Objects.requireNonNull(roleToFind);
     }
 
     public List<String> getStringRoles() {
